@@ -8,7 +8,6 @@
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Poppins:wght@300;400;500&display=swap" rel="stylesheet">
 
 <style>
-/* BODY & BACKGROUND */
 body {
     margin: 0;
     min-height: 100vh;
@@ -22,7 +21,6 @@ body {
     overflow: hidden;
 }
 
-/* CARD */
 .card {
     background: white;
     border-radius: 22px;
@@ -40,7 +38,6 @@ body {
     transform: rotateX(0deg);
 }
 
-/* TITLE */
 h1 {
     font-family: 'Playfair Display', serif;
     font-size: 28px;
@@ -48,7 +45,6 @@ h1 {
     margin-bottom: 26px;
 }
 
-/* BUTTONS */
 button {
     width: 100%;
     padding: 16px;
@@ -68,7 +64,6 @@ button {
     position: relative;
 }
 
-/* SMALL LINK */
 .open-link {
     font-family: 'Playfair Display', serif;
     font-size: 18px;
@@ -79,66 +74,47 @@ button {
     cursor: pointer;
 }
 
-/* POP EFFECT */
-.pop {
-    animation: popUp 0.5s ease;
-}
-@keyframes popUp {
-    0% { opacity: 0; transform: translateY(20px) scale(0.95); }
-    60% { opacity: 1; transform: translateY(-6px) scale(1.03); }
-    100% { transform: translateY(0) scale(1); }
+.bg-heart, .heart, .bear {
+    position: fixed;
+    pointer-events: none;
+    z-index: 3;
+    bottom: 0px; /* start from very bottom */
 }
 
-/* BACKGROUND HEARTS */
+/* Smooth floating background hearts */
 .bg-heart {
-    position: fixed;
-    bottom: -50px; /* start below screen */
     color: rgba(255,255,255,0.5);
-    animation: bgFloat linear forwards;
-    pointer-events: none;
-    z-index: 0;
+    animation-name: floatToTop;
+    animation-timing-function: linear;
+    animation-fill-mode: forwards;
 }
-@keyframes bgFloat {
+@keyframes floatToTop {
     0% { transform: translateY(0); opacity: 0; }
     10% { opacity: 1; }
-    100% { transform: translateY(-110vh); opacity: 0; } /* move to top */
+    100% { transform: translateY(-110vh); opacity: 0; }
 }
 
-/* CLICK HEARTS */
+/* Smooth click hearts */
 .heart {
-    position: fixed;
     font-size: 22px;
-    animation: floatUp 2.5s ease forwards;
-    pointer-events: none;
-    z-index: 3;
-}
-@keyframes floatUp {
-    0% { opacity: 0; transform: translateY(0) scale(0.8); }
-    20% { opacity: 1; }
-    100% { opacity: 0; transform: translateY(-100vh) scale(1.4); }
+    animation-name: floatToTop;
+    animation-timing-function: linear;
+    animation-fill-mode: forwards;
 }
 
-/* BEARS */
+/* Smooth bears */
 .bear {
     font-size: 34px;
-    position: fixed;
-    animation: bearPop 2s ease forwards;
-    pointer-events: none;
-    z-index: 3;
-}
-@keyframes bearPop {
-    0% { opacity: 0; transform: scale(0.3) translateY(0); }
-    40% { opacity: 1; transform: scale(1.2) translateY(-50vh); } 
-    100% { opacity: 0; transform: scale(1) translateY(-100vh); }
+    animation-name: floatToTop;
+    animation-timing-function: linear;
+    animation-fill-mode: forwards;
 }
 </style>
 </head>
 <body>
 
-<!-- Small link -->
 <div class="open-link" onclick="openValentine()">გახსენი ბაიკო</div>
 
-<!-- Main card -->
 <div id="content" class="card">
     <h1>Will You Be My Valentine ბაიკო? 💘</h1>
     <button class="yes" onclick="showYes()">კი ❤️</button>
@@ -148,14 +124,11 @@ button {
 <script>
 const card = document.getElementById("content");
 
-/* Open card animation & hide link */
 function openValentine() {
     card.classList.add("open");
-    const link = document.querySelector('.open-link');
-    link.style.display = 'none'; // hide after click
+    document.querySelector('.open-link').style.display = 'none';
 }
 
-/* Move No button randomly */
 function moveNo() {
     const btn = document.getElementById("noBtn");
     const x = Math.random() * 120 - 60;
@@ -163,54 +136,53 @@ function moveNo() {
     btn.style.transform = `translate(${x}px, ${y}px)`;
 }
 
-/* Spawn floating background hearts */
+// Smooth background hearts
 function spawnBgHeart() {
     const heart = document.createElement("div");
     heart.className = "bg-heart";
     heart.innerHTML = "❤️";
-    heart.style.left = Math.random() * 100 + "vw";
-    heart.style.fontSize = (14 + Math.random() * 26) + "px";
-    heart.style.animationDuration = (6 + Math.random() * 6) + "s";
+    heart.style.left = Math.random()*100 + "vw";
+    heart.style.fontSize = (14 + Math.random()*26) + "px";
+    heart.style.animationDuration = (8 + Math.random()*5) + "s"; // random speed
     document.body.appendChild(heart);
-    setTimeout(() => heart.remove(), 12000);
+    setTimeout(()=>heart.remove(), 13000);
 }
-setInterval(spawnBgHeart, 600);
+setInterval(spawnBgHeart, 500);
 
-/* Click hearts and bears animations */
+// Click hearts
 function createHearts() {
-    for (let i = 0; i < 6; i++) {
+    for(let i=0;i<6;i++){
         const heart = document.createElement("div");
-        heart.className = "heart";
-        heart.innerHTML = "❤️";
-        heart.style.left = Math.random() * window.innerWidth + "px";
-        heart.style.bottom = "0px"; // start at very bottom
+        heart.className="heart";
+        heart.innerHTML="❤️";
+        heart.style.left = Math.random()*window.innerWidth + "px";
+        heart.style.fontSize = (20 + Math.random()*10) + "px";
+        heart.style.animationDuration = (2 + Math.random()*2) + "s"; // random speed
         document.body.appendChild(heart);
-        setTimeout(() => heart.remove(), 2500);
+        setTimeout(()=>heart.remove(), 4000);
     }
 }
 
+// Bears
 function createBears() {
-    const bears = ["🧸", "🧸💖", "💘🧸"];
-    for (let i = 0; i < 3; i++) {
+    const bears = ["🧸","🧸💖","💘🧸"];
+    for(let i=0;i<3;i++){
         const bear = document.createElement("div");
-        bear.className = "bear";
-        bear.innerHTML = bears[Math.floor(Math.random() * bears.length)];
-        bear.style.left = Math.random() * window.innerWidth + "px";
-        bear.style.bottom = "0px"; // start at very bottom
+        bear.className="bear";
+        bear.innerHTML=bears[Math.floor(Math.random()*bears.length)];
+        bear.style.left = Math.random()*window.innerWidth + "px";
+        bear.style.fontSize = (30 + Math.random()*10) + "px";
+        bear.style.animationDuration = (3 + Math.random()*2) + "s"; // random speed
         document.body.appendChild(bear);
-        setTimeout(() => bear.remove(), 2000);
+        setTimeout(()=>bear.remove(), 5000);
     }
 }
 
-setInterval(() => { createHearts(); createBears(); }, 1000);
+// Animate hearts and bears continuously
+setInterval(()=>{ createHearts(); createBears(); }, 800);
 
-/* Navigation to yes.html / no.html */
-function showYes() {
-    window.location.href = "yes.html";
-}
-function showNo() {
-    window.location.href = "no.html";
-}
+function showYes() { window.location.href="yes.html"; }
+function showNo() { window.location.href="no.html"; }
 </script>
 
 </body>
