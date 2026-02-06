@@ -33,37 +33,48 @@ body {
     z-index: 2;
 }
 
-/* Title inside card */
 h1 {
     font-family: 'Playfair Display', serif;
     font-size: 28px;
     color: #c9184a;
     margin-bottom: 16px;
 }
-
-/* Paragraph inside card */
 p {
     font-size: 18px;
     color: #333;
     line-height: 1.5;
 }
 
-/* Floating hearts (background) */
-.bg-heart {
+/* Floating emojis */
+.floating {
     position: fixed;
     bottom: 0;
-    color: rgba(255,255,255,0.5);
     pointer-events: none;
-    z-index:0;
+    z-index: 3;
     animation-name: floatUp;
     animation-timing-function: linear;
     animation-fill-mode: forwards;
 }
 
+/* Hearts & general float */
 @keyframes floatUp {
     0% { transform: translateY(0); opacity: 0; }
     10% { opacity: 1; }
     100% { transform: translateY(-110vh); opacity: 0; }
+}
+
+/* Bears & drift */
+.bear {
+    font-size: 30px;
+    --driftX: 0px;
+}
+.bear.floating {
+    animation-name: bearFloat;
+}
+@keyframes bearFloat {
+    0% { transform: translate(0px,0) scale(0.6); opacity:0; }
+    10% { opacity:1; }
+    100% { transform: translate(var(--driftX), -100vh) scale(1); opacity:0; }
 }
 </style>
 </head>
@@ -75,18 +86,42 @@ p {
 </div>
 
 <script>
-// Spawn background hearts continuously
-function spawnBgHeart() {
-    const heart = document.createElement("div");
-    heart.className = "bg-heart";
-    heart.innerHTML = "❤️";
-    heart.style.left = Math.random()*100 + "vw";
-    heart.style.fontSize = (14 + Math.random()*26) + "px";
-    heart.style.animationDuration = (8 + Math.random()*5) + "s";
-    document.body.appendChild(heart);
-    setTimeout(()=>heart.remove(),13000);
+// Emojis arrays
+const hearts = ["❤️","💖","💘"];
+const bears = ["🧸","🧸💖","💘🧸"];
+const sweets = ["🍬","🍫","🍭","🍩","🍪","🥰"];
+
+// Function to spawn random floating emoji
+function spawnEmoji() {
+    const choice = Math.random();
+    let emoji = document.createElement("div");
+    emoji.classList.add("floating");
+    
+    if(choice < 0.4){
+        emoji.innerHTML = hearts[Math.floor(Math.random()*hearts.length)];
+        emoji.style.fontSize = (18+Math.random()*12)+"px";
+        emoji.style.left = Math.random()*100+"vw";
+        emoji.style.animationDuration = (5+Math.random()*5)+"s";
+    } else if(choice < 0.7){
+        emoji.innerHTML = bears[Math.floor(Math.random()*bears.length)];
+        emoji.classList.add("bear");
+        emoji.style.fontSize = (28+Math.random()*12)+"px";
+        emoji.style.left = Math.random()*100+"vw";
+        emoji.style.setProperty('--driftX', (Math.random()*100 -50)+"px");
+        emoji.style.animationDuration = (6+Math.random()*4)+"s";
+    } else {
+        emoji.innerHTML = sweets[Math.floor(Math.random()*sweets.length)];
+        emoji.style.fontSize = (20+Math.random()*10)+"px";
+        emoji.style.left = Math.random()*100+"vw";
+        emoji.style.animationDuration = (5+Math.random()*5)+"s";
+    }
+    
+    document.body.appendChild(emoji);
+    setTimeout(()=>emoji.remove(), 12000);
 }
-setInterval(spawnBgHeart, 500);
+
+// Spawn emojis continuously
+setInterval(spawnEmoji, 500);
 </script>
 
 </body>
