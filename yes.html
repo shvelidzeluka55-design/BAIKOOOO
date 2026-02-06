@@ -2,9 +2,96 @@
 <html lang="ka">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Yes ❤️</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Poppins:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+body {
+    margin: 0;
+    min-height: 100vh;
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(135deg, #ffdde1, #ee9ca7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 20px;
+    overflow: hidden;
+}
+
+#answer {
+    background: white;
+    border-radius: 22px;
+    padding: 32px 22px;
+    max-width: 360px;
+    width: 100%;
+    box-shadow: 0 20px 45px rgba(0,0,0,0.18);
+    font-family: 'Playfair Display', serif;
+    font-size: 20px;
+    color: #c9184a;
+}
+
+/* Floating hearts */
+.bg-heart { position: fixed; bottom: -40px; color: rgba(255,255,255,0.5); animation: bgFloat linear forwards; pointer-events:none; z-index:0;}
+@keyframes bgFloat { from {transform: translateY(0); opacity:0;} 10%{opacity:1;} to{transform: translateY(-110vh); opacity:0;} }
+
+/* Click hearts */
+.heart { position: fixed; font-size:22px; animation: floatUp 2.5s ease forwards; pointer-events:none; z-index:3;}
+@keyframes floatUp { 0%{opacity:0;transform:translateY(0) scale(0.8);} 20%{opacity:1;} 100%{opacity:0; transform:translateY(-120px) scale(1.4);} }
+
+/* Bears */
+.bear { font-size:34px; position:fixed; animation: bearPop 2s ease forwards; pointer-events:none; z-index:3;}
+@keyframes bearPop {0%{opacity:0;transform:scale(0.3) translateY(30px);}40%{opacity:1;transform:scale(1.2) translateY(-10px);}100%{opacity:0;transform:scale(1) translateY(-40px);}}
+</style>
 </head>
 <body>
-<h1>შენ მითხარი კი! 💖</h1>
+
+<div id="answer">
+შენ ჩემი ყველაზე ლამაზი ისტორია ხარ 💖<br>მინდა ყველა დღე შენთან ერთად დავწერო 🌹✨
+</div>
+
+<script>
+/* Spawn floating background hearts */
+function spawnBgHeart() {
+    const heart = document.createElement("div");
+    heart.className = "bg-heart";
+    heart.innerHTML = "❤️";
+    heart.style.left = Math.random() * 100 + "vw";
+    heart.style.fontSize = (14 + Math.random()*26) + "px";
+    heart.style.animationDuration = (6 + Math.random()*6) + "s";
+    document.body.appendChild(heart);
+    setTimeout(()=>heart.remove(),12000);
+}
+setInterval(spawnBgHeart, 600);
+
+/* Create click hearts and bears randomly */
+function createHearts() {
+    for(let i=0;i<6;i++){
+        const heart = document.createElement("div");
+        heart.className="heart";
+        heart.innerHTML="❤️";
+        heart.style.left = Math.random()*window.innerWidth+"px";
+        heart.style.bottom="80px";
+        document.body.appendChild(heart);
+        setTimeout(()=>heart.remove(),2500);
+    }
+}
+function createBears() {
+    const bears = ["🧸","🧸💖","💘🧸"];
+    for(let i=0;i<3;i++){
+        const bear = document.createElement("div");
+        bear.className="bear";
+        bear.innerHTML=bears[Math.floor(Math.random()*bears.length)];
+        bear.style.left = Math.random()*window.innerWidth+"px";
+        bear.style.bottom="120px";
+        document.body.appendChild(bear);
+        setTimeout(()=>bear.remove(),2000);
+    }
+}
+
+/* Animate continuously */
+setInterval(()=>{createHearts(); createBears();},1000);
+</script>
+
 </body>
 </html>
