@@ -3,8 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>No 💔</title>
+<title>არა 💔</title>
+
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Poppins:wght@300;400;500&display=swap" rel="stylesheet">
+
 <style>
 body {
     margin: 0;
@@ -19,79 +21,98 @@ body {
     overflow: hidden;
 }
 
-/* Answer card */
-#answer {
+/* Card */
+.card {
     background: white;
     border-radius: 22px;
     padding: 32px 22px;
     max-width: 360px;
     width: 100%;
     box-shadow: 0 20px 45px rgba(0,0,0,0.18);
-    font-family: 'Playfair Display', serif;
-    font-size: 20px;
-    color: #c9184a;
+    position: relative;
+    z-index: 2;
 }
 
-/* Background floating hearts */
-.bg-heart { position: fixed; bottom: -40px; color: rgba(255,255,255,0.5); animation: bgFloat linear forwards; pointer-events:none; z-index:0;}
-@keyframes bgFloat { from {transform: translateY(0); opacity:0;} 10%{opacity:1;} to{transform: translateY(-110vh); opacity:0;} }
+h1 { font-family: 'Playfair Display', serif; font-size: 28px; color: #c9184a; margin-bottom: 16px; }
+p { font-size: 18px; color: #333; line-height: 1.5; }
 
-/* Click hearts */
-.heart { position: fixed; font-size:22px; animation: floatUp 2.5s ease forwards; pointer-events:none; z-index:3;}
-@keyframes floatUp { 0%{opacity:0;transform:translateY(0) scale(0.8);} 20%{opacity:1;} 100%{opacity:0; transform:translateY(-120px) scale(1.4);} }
+/* Floating emojis */
+.floating {
+    position: fixed;
+    bottom: 0;
+    pointer-events: none;
+    z-index: 3;
+    animation-name: floatUp;
+    animation-timing-function: linear;
+    animation-fill-mode: forwards;
+}
 
-/* Bears */
-.bear { font-size:34px; position:fixed; animation: bearPop 2s ease forwards; pointer-events:none; z-index:3;}
-@keyframes bearPop {0%{opacity:0;transform:scale(0.3) translateY(30px);}40%{opacity:1;transform:scale(1.2) translateY(-10px);}100%{opacity:0;transform:scale(1) translateY(-40px);}}
+/* Floating hearts & general emojis */
+@keyframes floatUp {
+    0% { transform: translateY(0); opacity: 0; }
+    10% { opacity: 1; }
+    100% { transform: translateY(-110vh); opacity: 0; }
+}
+
+/* Bears drift */
+.bear {
+    font-size: 30px;
+    --driftX: 0px;
+}
+.bear.floating {
+    animation-name: bearFloat;
+}
+@keyframes bearFloat {
+    0% { transform: translate(0px,0) scale(0.6); opacity:0; }
+    10% { opacity:1; }
+    100% { transform: translate(var(--driftX), -100vh) scale(1); opacity:0; }
+}
 </style>
 </head>
 <body>
 
-<div id="answer">
-კარგად დაფიქრდი ბაიკო… 🥺💭<br>ზოგი სიყვარული ჩუმად, მაგრამ სამუდამოდ მოდის 💔😢
+<div class="card">
+    <h1>კარგად დაფიქრდი ბაიკო… 🥺💭</h1>
+    <p>ზოგი სიყვარული ჩუმად, მაგრამ სამუდამოდ მოდის ❤️😢</p>
 </div>
 
 <script>
-/* Spawn background floating hearts */
-function spawnBgHeart() {
-    const heart = document.createElement("div");
-    heart.className = "bg-heart";
-    heart.innerHTML = "💔"; // use broken heart emoji
-    heart.style.left = Math.random() * 100 + "vw";
-    heart.style.fontSize = (14 + Math.random()*26) + "px";
-    heart.style.animationDuration = (6 + Math.random()*6) + "s";
-    document.body.appendChild(heart);
-    setTimeout(()=>heart.remove(),12000);
-}
-setInterval(spawnBgHeart, 600);
+// Emojis arrays
+const hearts = ["💔","💙","💧"];
+const bears = ["🧸","🧸💔"];
+const sweets = ["🍫","🍪","🍩","🥺"];
 
-/* Create floating hearts and bears on page */
-function createHearts() {
-    for(let i=0;i<6;i++){
-        const heart = document.createElement("div");
-        heart.className="heart";
-        heart.innerHTML="💔"; // broken heart for sad vibes
-        heart.style.left = Math.random()*window.innerWidth+"px";
-        heart.style.bottom="80px";
-        document.body.appendChild(heart);
-        setTimeout(()=>heart.remove(),2500);
+// Function to spawn random floating emoji
+function spawnEmoji() {
+    const choice = Math.random();
+    let emoji = document.createElement("div");
+    emoji.classList.add("floating");
+    
+    if(choice < 0.4){
+        emoji.innerHTML = hearts[Math.floor(Math.random()*hearts.length)];
+        emoji.style.fontSize = (18+Math.random()*12)+"px";
+        emoji.style.left = Math.random()*100+"vw";
+        emoji.style.animationDuration = (8+Math.random()*5)+"s"; // slower
+    } else if(choice < 0.7){
+        emoji.innerHTML = bears[Math.floor(Math.random()*bears.length)];
+        emoji.classList.add("bear");
+        emoji.style.fontSize = (28+Math.random()*12)+"px";
+        emoji.style.left = Math.random()*100+"vw";
+        emoji.style.setProperty('--driftX', (Math.random()*100 -50)+"px");
+        emoji.style.animationDuration = (6+Math.random()*4)+"s"; // slower
+    } else {
+        emoji.innerHTML = sweets[Math.floor(Math.random()*sweets.length)];
+        emoji.style.fontSize = (20+Math.random()*10)+"px";
+        emoji.style.left = Math.random()*100+"vw";
+        emoji.style.animationDuration = (5+Math.random()*5)+"s"; // slower
     }
-}
-function createBears() {
-    const bears = ["😢","🥺","💔🧸"]; // sad/crying/broken
-    for(let i=0;i<3;i++){
-        const bear = document.createElement("div");
-        bear.className="bear";
-        bear.innerHTML=bears[Math.floor(Math.random()*bears.length)];
-        bear.style.left = Math.random()*window.innerWidth+"px";
-        bear.style.bottom="120px";
-        document.body.appendChild(bear);
-        setTimeout(()=>bear.remove(),2000);
-    }
+    
+    document.body.appendChild(emoji);
+    setTimeout(()=>emoji.remove(), 12000);
 }
 
-/* Animate continuously */
-setInterval(()=>{createHearts(); createBears();},1000);
+// Spawn emojis continuously
+setInterval(spawnEmoji, 500);
 </script>
 
 </body>
